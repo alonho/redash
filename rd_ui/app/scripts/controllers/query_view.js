@@ -108,7 +108,6 @@
 
       delete data.latest_query_data;
       delete data.queryResult;
-
       return Query.save(data, function() {
         growl.addSuccessMessage(options.successMessage);
       }, function(httpResponse) {
@@ -117,11 +116,17 @@
     }
 
     $scope.saveDescription = function() {
+      if (!$scope.query.id) {
+        return;
+      }
       Events.record(currentUser, 'edit_description', 'query', $scope.query.id);
       $scope.saveQuery(undefined, {'description': $scope.query.description});
     };
 
     $scope.saveName = function() {
+      if (!$scope.query.id) {
+        return;
+      }
       Events.record(currentUser, 'edit_name', 'query', $scope.query.id);
       $scope.saveQuery(undefined, {'name': $scope.query.name});
     };
