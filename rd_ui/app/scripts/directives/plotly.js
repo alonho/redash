@@ -46,12 +46,17 @@
     if (seriesList.length == 0)
       return;
     fillXValues(seriesList);
+    _.each(seriesList, function(series) {
+      series.text = [];
+      series.hoverinfo = 'text+name';
+    });
     for (var i = 0; i < seriesList[0].y.length; i++) {
       var sum = 0;
       for(var j = 0; j < seriesList.length; j++) {
         sum += seriesList[j]['y'][i];
       }
       for(var j = 0; j < seriesList.length; j++) {
+        seriesList[j].text.push('Value: ' + seriesList[j]['y'][i]);
         seriesList[j]['y'][i] = seriesList[j]['y'][i] / sum * 100;
         if (j > 0)
           seriesList[j].y[i] += seriesList[j-1].y[i];
@@ -63,13 +68,19 @@
     if (seriesList.length == 0)
       return;
     fillXValues(seriesList);
+    _.each(seriesList, function(series) {
+      series.text = [];
+      series.hoverinfo = 'text+name';
+    });
     for (var i = 0; i < seriesList[0].y.length; i++) {
       var sum = 0;
       for(var j = 0; j < seriesList.length; j++) {
         sum += seriesList[j]['y'][i];
       }
       for(var j = 0; j < seriesList.length; j++) {
-        seriesList[j]['y'][i] = seriesList[j]['y'][i] / sum * 100;
+        var value = seriesList[j]['y'][i] / sum * 100;
+        seriesList[j].text.push('Value: ' + seriesList[j]['y'][i] + '<br>Relative: ' + value.toFixed(2) + '%');
+        seriesList[j]['y'][i] = value;
       }
     }
   }
@@ -215,7 +226,8 @@
 
           scope.$watch('series', redraw);
           scope.$watch('options', redraw, true);
-          scope.layout = {margin: {l: 50, r: 50, b: 50, t: 20, pad: 4}, height: scope.height, autosize: true};
+          scope.layout = {margin: {l: 50, r: 50, b: 50, t: 20, pad: 4},
+                          height: scope.height, autosize: true, hovermode:'closest'};
           scope.plotlyOptions = {showLink: false, displaylogo: false};
           scope.data = [];
         }
